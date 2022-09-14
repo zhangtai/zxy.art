@@ -1,5 +1,6 @@
 ---
 title: 图表
+bookToc: false
 ---
 
-hihi
+{{< apexchart >}}
