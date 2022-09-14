@@ -2,3 +2,5 @@ baseURL = 'https://zxy.art/'
 languageCode = 'zh-Hans'
 title = '张潇虞(Arthur)'
 theme = "hugo-book"
+[markup.tableOfContents]
+  startLevel = 1
