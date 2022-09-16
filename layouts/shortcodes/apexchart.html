@@ -10,11 +10,24 @@
   <div class="chart" id="weight"></div>
 </div>
 <script type="text/javascript">
+  const locales = [{
+    "name": "zh-cn",
+    "options": {
+      "months": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+      "shortMonths": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+      "days": ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+      "shortDays": ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+      "toolbar": { "exportToSVG": "下载 SVG", "exportToPNG": "下载 PNG", "exportToCSV": "下载 CSV", "menu": "菜单", "selection": "选择", "selectionZoom": "选择缩放", "zoomIn": "放大", "zoomOut": "缩小", "pan": "平移", "reset": "重置缩放" }
+    }
+  }]
+
   fetch('/data/br.json')
     .then((response) => response.json())
     .then((data) => {
       var brOptions = {
         chart: {
+          locales: locales,
+          defaultLocale: "zh-cn",
           type: 'line'
         },
         series: [
@@ -27,6 +40,9 @@
             data: data.map((metric) => metric.values.body),
           },
         ],
+        stroke: {
+          width: 2
+        },
         xaxis: {
           type: "datetime",
           categories: data.map((metric) => metric.time),
@@ -110,7 +126,12 @@
     .then((data) => {
       let options = {
         chart: {
+          locales: locales,
+          defaultLocale: "zh-cn",
           type: 'line'
+        },
+        stroke: {
+          width: 4
         },
         series: [
           {
@@ -124,16 +145,16 @@
         },
         annotations: {
           points: [{
-              x: new Date("2022-09-11T20:42:00").getTime(),
-              y: 3090,
-              marker: {
-                size: 2,
-              },
-              label: {
-                borderColor: "#FF4560",
-                text: "第一次喝了90ml🍼",
-              },
-            }],
+            x: new Date("2022-09-11T20:42:00").getTime(),
+            y: 3090,
+            marker: {
+              size: 2,
+            },
+            label: {
+              borderColor: "#FF4560",
+              text: "第一次喝了90ml🍼",
+            },
+          }],
         }
       }
       let chart = new ApexCharts(document.querySelector("#weight"), options);
