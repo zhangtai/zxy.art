@@ -1,5 +1,5 @@
 ---
-title: 图表
+title: 成长图表
 bookToc: false
 ---
 
