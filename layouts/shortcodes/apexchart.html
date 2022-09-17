@@ -2,12 +2,12 @@
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.css" integrity="sha512-Ax++m07N1ygXmTSeRlQZnB5leVSw9eDeHQZ2ltn7oln1U3d+6d+/u1JEZ/zY/tLtmmEL741jEnDUlmWttBPLOA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <div class="chart-container">
-  <h1>黄疸</h1>
-  <div class="chart" id="br"></div>
-</div>
-<div class="chart-container">
   <h1>体重</h1>
   <div class="chart" id="weight"></div>
+</div>
+<div class="chart-container">
+  <h1>黄疸</h1>
+  <div class="chart" id="br"></div>
 </div>
 <script type="text/javascript">
   const locales = [{
@@ -41,7 +41,8 @@
           },
         ],
         stroke: {
-          width: 2
+          width: 3,
+          curve: 'smooth'
         },
         xaxis: {
           type: "datetime",
@@ -62,7 +63,7 @@
               },
             },
             {
-              y: 8,
+              y: 7.5,
               borderColor: "#2FDB5D",
               label: {
                 borderColor: "#2FDB5D",
@@ -139,9 +140,29 @@
             data: data.map((metric) => metric.value),
           }
         ],
+        forecastDataPoints: {
+          count: 12
+        },
+        stroke: {
+          width: 5,
+          curve: 'smooth'
+        },
         xaxis: {
           type: "datetime",
+          tickAmount: 10,
           categories: data.map((metric) => metric.time),
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'dark',
+            gradientToColors: [ '#FDD835'],
+            shadeIntensity: 1,
+            type: 'horizontal',
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100, 100, 100]
+          },
         },
         annotations: {
           points: [{
@@ -153,6 +174,17 @@
             label: {
               borderColor: "#FF4560",
               text: "第一次喝了90ml🍼",
+            },
+          },
+          {
+            x: new Date("2022-09-28T11:00:00").getTime(),
+            y: 3790,
+            marker: {
+              size: 2,
+            },
+            label: {
+              borderColor: "#FF4560",
+              text: "回家",
             },
           }],
         }
