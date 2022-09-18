@@ -1,6 +1,6 @@
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js" integrity="sha512-K5BohS7O5E+S/W8Vjx4TIfTZfxe9qFoRXlOXEAWJD7MmOXhvsSl2hJihqc0O8tlIfcjrIkQXiBjixV8jgon9Uw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.css" integrity="sha512-Ax++m07N1ygXmTSeRlQZnB5leVSw9eDeHQZ2ltn7oln1U3d+6d+/u1JEZ/zY/tLtmmEL741jEnDUlmWttBPLOA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 <div class="chart-container">
   <h1>体重</h1>
   <div class="chart" id="weight"></div>
@@ -9,6 +9,7 @@
   <h1>黄疸</h1>
   <div class="chart" id="br"></div>
 </div>
+
 <script type="text/javascript">
   const locales = [{
     "name": "zh-cn",
@@ -20,9 +21,12 @@
       "toolbar": { "exportToSVG": "下载 SVG", "exportToPNG": "下载 PNG", "exportToCSV": "下载 CSV", "menu": "菜单", "selection": "选择", "selectionZoom": "选择缩放", "zoomIn": "放大", "zoomOut": "缩小", "pan": "平移", "reset": "重置缩放" }
     }
   }]
-
-  fetch('/data/br.json')
-    .then((response) => response.json())
+  const base = supabase.createClient(
+    'https://tpfryrnbzljbbbkqzoxz.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwZnJ5cm5iemxqYmJia3F6b3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjM0ODI4MDksImV4cCI6MTk3OTA1ODgwOX0.JjjxFyTh_OhKTs-cd_Er3vwI9Mpd8ACAstrt3sIGENs'
+  )
+  base.from("arthur-br").select().order('record_at', { ascending: true })
+    .then((response) => response.data)
     .then((data) => {
       var brOptions = {
         chart: {
@@ -33,11 +37,11 @@
         series: [
           {
             name: "面部",
-            data: data.map((metric) => metric.values.face),
+            data: data.map((metric) => metric.value_face),
           },
           {
             name: "身体",
-            data: data.map((metric) => metric.values.body),
+            data: data.map((metric) => metric.value_body),
           },
         ],
         stroke: {
@@ -46,7 +50,7 @@
         },
         xaxis: {
           type: "datetime",
-          categories: data.map((metric) => metric.time),
+          categories: data.map((metric) => metric.record_at),
         },
         annotations: {
           yaxis: [
@@ -122,9 +126,9 @@
       }
       let chart = new ApexCharts(document.querySelector("#br"), brOptions);
       chart.render();
-    });
-  fetch('/data/weight.json')
-    .then((response) => response.json())
+    })
+  base.from("arthur-weight").select().order('record_at', { ascending: true })
+    .then((response) => response.data)
     .then((data) => {
       let options = {
         chart: {
@@ -151,13 +155,13 @@
         xaxis: {
           type: "datetime",
           tickAmount: 10,
-          categories: data.map((metric) => metric.time),
+          categories: data.map((metric) => metric.record_at),
         },
         fill: {
           type: 'gradient',
           gradient: {
             shade: 'dark',
-            gradientToColors: [ '#FDD835'],
+            gradientToColors: ['#FDD835'],
             shadeIntensity: 1,
             type: 'horizontal',
             opacityFrom: 1,
@@ -204,4 +208,5 @@
       let chart = new ApexCharts(document.querySelector("#weight"), options);
       chart.render();
     })
+
 </script>
