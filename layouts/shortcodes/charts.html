@@ -79,7 +79,7 @@
               },
             },
           ],
-          points: data.filter(v => v.notes != null).map(p => {
+          points: data.filter(v => v.notes != null && v.notes != "").map(p => {
             return {
               x: new Date(p.record_at).getTime(),
               y: p.value_body,
@@ -169,7 +169,7 @@
           },
         },
         annotations: {
-          points: data.filter(v => v.notes != null).map(p => {
+          points: data.filter(v => v.notes != null && v.notes != "").map(p => {
             return {
               x: new Date(p.record_at).getTime(),
               y: p.value,
