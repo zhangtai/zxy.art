@@ -80,19 +80,19 @@
               },
             },
           ],
-          points: [
-            {
-              x: new Date("2022-09-01T10:00:00").getTime(),
-              y: 18,
+          points: data.filter(v => v.notes != null).map(p => {
+            return {
+              x: new Date(p.record_at).getTime(),
+              y: p.value_body,
               marker: {
                 size: 2,
               },
               label: {
-                borderColor: "#FF4560",
-                text: "🧑‍⚕️医生建议外出就诊",
+                borderColor: "#5BBCF0",
+                text: p.notes,
               },
-            },
-          ],
+            }
+          }),
           xaxis: [
             {
               x: new Date("2022-09-02T08:00:00").getTime(),
@@ -170,39 +170,19 @@
           },
         },
         annotations: {
-          points: [{
-            x: new Date("2022-09-11T20:42:00").getTime(),
-            y: 3090,
-            marker: {
-              size: 2,
-            },
-            label: {
-              borderColor: "#FF4560",
-              text: "第一次90ml🍼",
-            },
-          },
-          {
-            x: new Date("2022-09-25T07:33:00").getTime(),
-            y: 3600,
-            marker: {
-              size: 2,
-            },
-            label: {
-              borderColor: "#FF4560",
-              text: "第30天🌕",
-            },
-          },
-          {
-            x: new Date("2022-09-28T11:00:00").getTime(),
-            y: 3790,
-            marker: {
-              size: 2,
-            },
-            label: {
-              borderColor: "#FF4560",
-              text: "回家🏠",
-            },
-          }],
+          points: data.filter(v => v.notes != null).map(p => {
+            return {
+              x: new Date(p.record_at).getTime(),
+              y: p.value,
+              marker: {
+                size: 2,
+              },
+              label: {
+                borderColor: "#5BBCF0",
+                text: p.notes,
+              },
+            }
+          }),
         }
       }
       let chart = new ApexCharts(document.querySelector("#weight"), options);
