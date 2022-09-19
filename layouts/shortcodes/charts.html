@@ -2,11 +2,15 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <div class="chart-container">
-  <h1>体重</h1>
+  <h2>体重</h2>
   <div class="chart" id="weight"></div>
 </div>
 <div class="chart-container">
-  <h1>黄疸</h1>
+  <h2>奶量</h2>
+  <div class="chart" id="feeding"></div>
+</div>
+<div class="chart-container">
+  <h2>黄疸</h2>
   <div class="chart" id="br"></div>
 </div>
 
@@ -51,6 +55,9 @@
         xaxis: {
           type: "datetime",
           categories: data.map((metric) => metric.record_at),
+          labels: {
+            datetimeUTC: false,
+          }
         },
         annotations: {
           yaxis: [
@@ -145,7 +152,7 @@
           }
         ],
         forecastDataPoints: {
-          count: 11
+          count: 10
         },
         stroke: {
           width: 5,
@@ -153,8 +160,10 @@
         },
         xaxis: {
           type: "datetime",
-          tickAmount: 10,
           categories: data.map((metric) => metric.record_at),
+          labels: {
+            datetimeUTC: false,
+          }
         },
         fill: {
           type: 'gradient',
@@ -185,6 +194,109 @@
         }
       }
       let chart = new ApexCharts(document.querySelector("#weight"), options);
+      chart.render();
+    })
+  base.from("arthur-feeding").select().order('record_at', { ascending: true })
+    .then((response) => response.data)
+    .then((data) => {
+      data_by_date = data.reduce((groups, feed) => {
+        const date = (new Date(feed.record_at)).toLocaleDateString("sv");
+        if (!groups[date]) {
+          groups[date] = {
+            total: 0,
+            max: 0
+          };
+        }
+        groups[date].total += feed.value
+        if (feed.value > groups[date].max) {
+          groups[date].max = feed.value
+        }
+        return groups;
+      })
+      delete data_by_date.id
+      delete data_by_date.created_at
+      delete data_by_date.record_at
+      delete data_by_date.value
+      delete data_by_date.notes
+
+      let options = {
+        chart: {
+          locales: locales,
+          defaultLocale: "zh-cn",
+          type: 'line',
+          toolbar: {
+            show: true
+          }
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [1]
+        },
+        series: [
+          {
+            name: "总量",
+            type: 'bar',
+            data: Object.values(data_by_date).map(d => d.total),
+          },
+          {
+            name: "单次最多",
+            type: 'line',
+            data: Object.values(data_by_date).map(d => d.max),
+          }
+        ],
+        stroke: {
+          width: 3,
+          curve: 'smooth'
+        },
+        xaxis: {
+          type: "datetime",
+          categories: Object.keys(data_by_date),
+        },
+        yaxis: [
+          {
+            axisTicks: {
+              show: true
+            },
+            axisBorder: {
+              show: true,
+              color: "#FF1654"
+            },
+            labels: {
+              style: {
+                colors: "#FF1654"
+              }
+            },
+            title: {
+              text: "总量ml",
+              style: {
+                color: "#FF1654"
+              }
+            }
+          },
+          {
+            opposite: true,
+            axisTicks: {
+              show: true
+            },
+            axisBorder: {
+              show: true,
+              color: "#247BA0"
+            },
+            labels: {
+              style: {
+                colors: "#247BA0"
+              }
+            },
+            title: {
+              text: "单次最多ml",
+              style: {
+                color: "#247BA0"
+              }
+            }
+          }
+        ],
+      }
+      let chart = new ApexCharts(document.querySelector("#feeding"), options);
       chart.render();
     })
 
