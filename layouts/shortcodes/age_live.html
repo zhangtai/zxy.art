@@ -1,0 +1,8 @@
+<script src="https://cdn.jsdelivr.net/npm/luxon@3.0.3/build/global/luxon.min.js"></script>
+<span id="age"></span>
+<script>
+  const DateTime = luxon.DateTime
+  const birthDateTime = DateTime.fromISO("2022-08-27T07:33:00+08:00")
+  const age_string = birthDateTime.setLocale("zh-Hans").toRelative()
+  document.getElementById("age").innerText = age_string
+</script>
