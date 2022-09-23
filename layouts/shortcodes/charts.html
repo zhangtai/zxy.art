@@ -152,7 +152,7 @@
           }
         ],
         forecastDataPoints: {
-          count: 8
+          count: 6
         },
         stroke: {
           width: 5,
@@ -191,6 +191,20 @@
               },
             }
           }),
+          yaxis: [
+            {
+              y: 3790,
+              borderColor: "#CC3636",
+              label: {
+                borderColor: "#F57328",
+                style: {
+                  color: "#fff",
+                  background: "#F57328",
+                },
+                text: "1㎏",
+              },
+            },
+          ],
         }
       }
       let chart = new ApexCharts(document.querySelector("#weight"), options);
