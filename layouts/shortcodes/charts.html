@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3.0.4/build/global/luxon.min.js"></script>
 
 <div class="chart-container">
   <h2>体重</h2>
@@ -8,6 +9,7 @@
 <div class="chart-container">
   <h2>奶量</h2>
   <div class="chart" id="feeding"></div>
+  <div class="chart" id="feeding-by-hour"></div>
 </div>
 <div class="chart-container">
   <h2>黄疸</h2>
@@ -15,6 +17,19 @@
 </div>
 
 <script type="text/javascript">
+  const getDaysArray = function (start, end) {
+    for (var arr = [], dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
+      arr.push((new Date(dt)).toLocaleDateString("sv"));
+    }
+    return arr;
+  };
+  const DateTime = luxon.DateTime;
+  class Weight {
+    constructor(record_at, value) {
+      this.record_at = record_at;
+      this.value = value;
+    }
+  }
   const locales = [{
     "name": "zh-cn",
     "options": {
@@ -236,8 +251,10 @@
       delete data_by_date.record_at
       delete data_by_date.value
       delete data_by_date.notes
+      weights = data.map(e => new Weight(DateTime.fromISO(e.record_at), e.value))
+      const feedingDates = getDaysArray(new Date("2022-08-29"), (new Date()).toLocaleDateString("sv"));
 
-      let options = {
+      let feedingOptions = {
         chart: {
           locales: locales,
           defaultLocale: "zh-cn",
@@ -314,8 +331,30 @@
           }
         ],
       }
-      let chart = new ApexCharts(document.querySelector("#feeding"), options);
-      chart.render();
+      let feedingChart = new ApexCharts(document.querySelector("#feeding"), feedingOptions);
+      feedingChart.render();
+
+      const feedingByHourOptions = {
+        series: feedingDates.map(d => {
+          let entries = weights.filter(e => e.record_at.toISODate() === d)
+          let ser = Array(24).fill(0).map((a, b) => { return { x: (a + b).toString(), y: 0 } })
+          entries.map(e => { ser[e.record_at.hour].y += e.value })
+          return { name: d, data: ser }
+        }),
+        chart: {
+          height: 600,
+          type: 'heatmap',
+        },
+        dataLabels: {
+          enabled: false
+        },
+        colors: ["#008FFB"],
+        title: {
+          text: '每小时奶量'
+        },
+      }
+      let feedingByHourChart = new ApexCharts(document.querySelector("#feeding-by-hour"), feedingByHourOptions);
+      feedingByHourChart.render();
     })
 
 </script>
