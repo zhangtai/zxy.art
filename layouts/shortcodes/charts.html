@@ -44,7 +44,7 @@
     'https://tpfryrnbzljbbbkqzoxz.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwZnJ5cm5iemxqYmJia3F6b3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjM0ODI4MDksImV4cCI6MTk3OTA1ODgwOX0.JjjxFyTh_OhKTs-cd_Er3vwI9Mpd8ACAstrt3sIGENs'
   )
-  base.from("arthur-br").select().order('record_at', { ascending: true })
+  base.from("br").select().order('record_at', { ascending: true })
     .then((response) => response.data)
     .then((data) => {
       var brOptions = {
@@ -150,7 +150,7 @@
       let chart = new ApexCharts(document.querySelector("#br"), brOptions);
       chart.render();
     })
-  base.from("arthur-weight").select().order('record_at', { ascending: true })
+  base.from("weight").select().order('record_at', { ascending: true })
     .then((response) => response.data)
     .then((data) => {
       let options = {
@@ -226,7 +226,7 @@
       let chart = new ApexCharts(document.querySelector("#weight"), options);
       chart.render();
     })
-  base.from("arthur-feeding").select().order('record_at', { ascending: true })
+  base.from("feeding").select().order('record_at', { ascending: true })
     .then((response) => response.data)
     .then((data) => {
       data_by_date = data.reduce((groups, feed) => {
